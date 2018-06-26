@@ -37,6 +37,9 @@ import java.awt.Font;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
+
 import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,6 +49,10 @@ import javax.swing.JButton;
 import java.awt.Button;
 import javax.swing.JComboBox;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.TableRowSorter;
+
 import java.awt.Color;
 import java.awt.Dimension;
 
@@ -65,6 +72,16 @@ public class GroupDetails {
 	private String selectedGroup;
 	private JComboBox groupSelectionComboBox;
 	private JPanel innerAvailableRuleboooksPanel;
+	private JTextField availableAgentFilterField;
+	private TableRowSorter<AgentTableModel> availableAgentSorter;
+	private JTextField assignedAgentFilterField;
+	private TableRowSorter<AgentTableModel> assignedAgentSorter;
+	
+	private JTextField assignedRulebookFilterField;
+	private TableRowSorter<RulebookTableModel> assignedRulebookSorter;
+	
+	private JTextField availableRulebookFilterField;
+	private TableRowSorter<RulebookTableModel> availableRulebookSorter;
 
 	/**
 	 * Launch the application.
@@ -129,8 +146,21 @@ public class GroupDetails {
 		JLabel lblAgentsAvailable = new JLabel("Agents Available");
 		lblAgentsAvailable.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		lblAgentsAvailable.setHorizontalAlignment(SwingConstants.CENTER);
-		lblAgentsAvailable.setBounds(10, 11, 229, 30);
+		lblAgentsAvailable.setBounds(10, 0, 229, 30);
 		availableAgentsPanel.add(lblAgentsAvailable);
+		
+		
+    	//Text field to filter available agent table
+		availableAgentFilterField= new JTextField();
+		availableAgentFilterField.setBounds(45,30 , 150, 20);
+		availableAgentsPanel.add(availableAgentFilterField);
+		JLabel agentFilterLabel= new JLabel("Filter:");
+		agentFilterLabel.setFont(new Font("Times New Roman",Font.ITALIC,15));
+		agentFilterLabel.setBounds(10, 30, 43, 20);
+		availableAgentsPanel.add(agentFilterLabel);
+		agentFilterLabel.setFont(new Font("Times New Roman",Font.ITALIC,15));
+		agentFilterLabel.setBounds(5, 30, 50, 20);
+		
 
 		JButton btnNewButton = new JButton("Assign To Group");
 		btnNewButton.addActionListener(new ActionListener() {
@@ -232,7 +262,18 @@ public class GroupDetails {
 		assignedAgentsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		assignedAgentsTable.setVisible(true);
 		agentsAssignedPanel.add(agentsScrollPane);
-
+		
+		//Filter Label+ Field
+		JLabel assignedAgentFilterLabel= new JLabel("Filter:");
+		assignedAgentFilterLabel.setBounds(10, 30, 40, 16);
+		assignedAgentFilterLabel.setFont(new Font("Times New Roman",Font.ITALIC,15));
+		groupPanel.add(assignedAgentFilterLabel);
+		
+		//Text field to filter assigned agent table
+		assignedAgentFilterField= new JTextField();
+		groupPanel.add(assignedAgentFilterField);
+		assignedAgentFilterField.setBounds(50,30 ,150, 20);
+	
 		/**
 		 * Assigned Rulebooks Panel
 		 * 
@@ -249,17 +290,35 @@ public class GroupDetails {
 		assignedRulebooksTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		assignedRulebooksTable.setVisible(true);
 		assignedRulebooksPanel.add(rulebooksScrollPane);
+		
+		//Text field to filter assigned Rulebooks table
+		JLabel assignedRulebookFilterLabel= new JLabel("Filter: ");
+		groupPanel.add(assignedRulebookFilterLabel);
+		assignedRulebookFilterLabel.setFont(new Font("Times New Roman",Font.ITALIC,15));
+		assignedRulebookFilterLabel.setBounds(414, 30, 43, 20);
+		
+	
+		assignedRulebookFilterField= new JTextField();
+		groupPanel.add(assignedRulebookFilterField);
+		assignedRulebookFilterField.setBounds(454, 30, 150, 20);
+
+		
+		
 
 		JLabel lblAgentsOfThis = new JLabel("Agents of This Group");
 		lblAgentsOfThis.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAgentsOfThis.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		lblAgentsOfThis.setBounds(10, 10, 388, 30);
+		lblAgentsOfThis.setBounds(10, 0, 388, 30);
 		groupPanel.add(lblAgentsOfThis);
+		
+	
+		
+
 
 		JLabel lblRulebooksOfThis = new JLabel("Rulebooks of This Group");
 		lblRulebooksOfThis.setHorizontalAlignment(SwingConstants.CENTER);
 		lblRulebooksOfThis.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		lblRulebooksOfThis.setBounds(414, 10, 388, 30);
+		lblRulebooksOfThis.setBounds(416, 0, 388, 30);
 		groupPanel.add(lblRulebooksOfThis);
 
 		/**
@@ -431,8 +490,22 @@ public class GroupDetails {
 		JLabel lblRulebooksAvailable = new JLabel("Rulebooks Available");
 		lblRulebooksAvailable.setHorizontalAlignment(SwingConstants.CENTER);
 		lblRulebooksAvailable.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		lblRulebooksAvailable.setBounds(10, 11, 229, 30);
+		lblRulebooksAvailable.setBounds(10, 0, 229, 30);
 		availableRulebooks.add(lblRulebooksAvailable);
+		
+		
+		JLabel availableRulebookFilterLabel= new JLabel("Filter: ");
+		availableRulebooks.add(availableRulebookFilterLabel);
+		availableRulebookFilterLabel.setFont(new Font("Times New Roman",Font.ITALIC,15));
+		availableRulebookFilterLabel.setBounds(10, 25, 43, 30);
+		
+		//Text field to filter assigned agent table
+		availableRulebookFilterField= new JTextField();
+		availableRulebooks.add(availableRulebookFilterField);
+		availableRulebookFilterField.setBounds(50, 30, 150, 20);
+		
+		
+		
 
 		JButton btnAssignToGroup = new JButton("Assign To Group");
 		btnAssignToGroup.addActionListener(new ActionListener() {
@@ -585,7 +658,102 @@ public class GroupDetails {
 
 		assignedAgentsTable.setModel(assignedAgentTableModel);
 		availableAgentTable.setModel(availableAgentTableModel);
+		
+		
+		/**
+		 * Filter Handle for all tables available on this view
+		 */
+		
 
+		//Code to filter available agents table
+		availableAgentTable.setModel(availableAgentTableModel);
+		availableAgentSorter = new TableRowSorter<AgentTableModel>(availableAgentTableModel);
+		availableAgentTable.setRowSorter(availableAgentSorter);
+		availableAgentFilterField.getDocument().addDocumentListener(new DocumentListener() {
+			  public void changedUpdate(DocumentEvent e) {
+				  filterAvailableAgents();
+				  }
+				  public void removeUpdate(DocumentEvent e) {
+					  filterAvailableAgents();
+				  }
+				  public void insertUpdate(DocumentEvent e) {
+					  filterAvailableAgents();
+				  }
+
+				  public void filterAvailableAgents() {
+					  availableAgentSorter.setRowFilter(RowFilter.regexFilter("(?i)"+availableAgentFilterField.getText()));
+					  availableAgentTable.setRowSorter(availableAgentSorter);
+				  }
+				});
+		
+				//Code to filter assigned agents table
+				assignedAgentsTable.setModel(assignedAgentTableModel);
+				assignedAgentSorter = new TableRowSorter<AgentTableModel>(assignedAgentTableModel);
+				assignedAgentsTable.setRowSorter(assignedAgentSorter);
+				assignedAgentFilterField.getDocument().addDocumentListener(new DocumentListener() {
+					  public void changedUpdate(DocumentEvent e) {
+						  filterAssignedAgents();
+						  }
+						  public void removeUpdate(DocumentEvent e) {
+							  filterAssignedAgents();
+						  }
+						  public void insertUpdate(DocumentEvent e) {
+							  filterAssignedAgents();
+						  }
+
+						  public void filterAssignedAgents() {
+							  assignedAgentSorter.setRowFilter(RowFilter.regexFilter("(?i)"+assignedAgentFilterField.getText()));
+							  assignedAgentsTable.setRowSorter(assignedAgentSorter);
+						  }
+						});
+
+				//Code to filter assigned Rulebooks table
+				assignedRulebooksTable.setModel(assignedRulebooksModel);
+				assignedRulebookSorter = new TableRowSorter<RulebookTableModel>(assignedRulebooksModel);
+				assignedRulebooksTable.setRowSorter(assignedRulebookSorter);
+				assignedRulebookFilterField.getDocument().addDocumentListener(new DocumentListener() {
+					  public void changedUpdate(DocumentEvent e) {
+						  filterAssignedRulebooks();
+						  }
+						  public void removeUpdate(DocumentEvent e) {
+							  filterAssignedRulebooks();
+						  }
+						  public void insertUpdate(DocumentEvent e) {
+							  filterAssignedRulebooks();
+						  }
+
+						  public void filterAssignedRulebooks() {
+							  assignedRulebookSorter.setRowFilter(RowFilter.regexFilter("(?i)"+assignedRulebookFilterField.getText()));
+							  assignedRulebooksTable.setRowSorter(assignedRulebookSorter);
+						  }
+						});
+				
+	
+				//Code to filter assigned Rulebooks table
+				availableRulebooksTable.setModel(availabledRulebooksModel);
+				availableRulebookSorter = new TableRowSorter<RulebookTableModel>(availabledRulebooksModel);
+				availableRulebooksTable.setRowSorter(availableRulebookSorter);
+				availableRulebookFilterField.getDocument().addDocumentListener(new DocumentListener() {
+					  public void changedUpdate(DocumentEvent e) {
+						  filterAvailableRulebooks();
+						  }
+						  public void removeUpdate(DocumentEvent e) {
+							  filterAvailableRulebooks();
+						  }
+						  public void insertUpdate(DocumentEvent e) {
+							  filterAvailableRulebooks();
+						  }
+
+						  public void filterAvailableRulebooks() {
+							  availableRulebookSorter.setRowFilter(RowFilter.regexFilter("(?i)"+availableRulebookFilterField.getText()));
+							  availableRulebooksTable.setRowSorter(availableRulebookSorter);
+						  }
+						});
+	}
+		
+		
+		
+		
 	}
 
-}
+

@@ -22,9 +22,6 @@ package com.appdynamics.universalagent.gui;
  */
 import java.awt.EventQueue;
 import javax.swing.JFrame;
-
-import com.appdynamics.universal.session.ExportHistoryToBash;
-import com.appdynamics.universal.session.Session;
 import com.appdynamics.universalagent.exceptions.NoAgentsException;
 import com.appdynamics.universalagent.models.AgentTableModel;
 import com.appdynamics.universalagent.models.GroupTableModel;
@@ -37,15 +34,18 @@ import com.appdynamics.universalagent.universalagent.Rulebook;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
-
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.TableRowSorter;
 
 public class MainApplicationWindow {
 
@@ -71,7 +71,24 @@ public class MainApplicationWindow {
 	private JButton refreshButton;
 	private JButton btnNewButton;
 
+
+	private JTextField rulebookFilterField;
+	private TableRowSorter<RulebookTableModel> rulebookSorter ;
+	
+	
+	private JTextField agentFilterField;
+	private TableRowSorter<AgentTableModel> agentSorter;
+	
+	
+	private JTextField groupFilterField;
+	private TableRowSorter<GroupTableModel> groupSorter;
+	
+	
+	
+	
+
 	/**
+	 * 
 	 * Launch the application.
 	 */
 	public void main(final ConnectionController controllerDetails) {
@@ -119,6 +136,8 @@ public class MainApplicationWindow {
 		 * Table for all agents if there are any
 		 */
 		agentTable = new JTable();
+		
+		 
 		scrollPane.setViewportView(agentTable);
 		agentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		agentTable.setVisible(true);
@@ -126,11 +145,34 @@ public class MainApplicationWindow {
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(23, 361, 482, 169);
 		frame.getContentPane().add(scrollPane_1);
+		
+		agentFilterField= new JTextField();
+		agentFilterField.setBounds(300, 56, 150, 30);
+		frame.getContentPane().add(agentFilterField);
+			
+		JLabel agentFilterLabel= new JLabel("Filter: ");
+		agentFilterLabel.setFont(new Font("Times New Roman",Font.ITALIC,15));
+		agentFilterLabel.setBounds(260,56,50,30);
+		frame.getContentPane().add(agentFilterLabel);
+		
+		
+		
 
 		rulebookTable = new JTable();
 		rulebookTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		rulebookTable.setAutoCreateRowSorter(true);
 		scrollPane_1.setViewportView(rulebookTable);
 
+		rulebookFilterField= new JTextField();
+		rulebookFilterField.setBounds(300, 320, 150, 30);
+		frame.getContentPane().add(rulebookFilterField);
+			
+		JLabel rulebookFilterLabel= new JLabel("Filter: ");
+		rulebookFilterLabel.setFont(new Font("Times New Roman",Font.ITALIC,15));
+		rulebookFilterLabel.setBounds(260,320,50,30);
+		frame.getContentPane().add(rulebookFilterLabel);
+		 
+		
 		lblRulebooks = new JLabel("Rulebooks");
 		lblRulebooks.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		lblRulebooks.setBounds(23, 320, 482, 30);
@@ -160,6 +202,17 @@ public class MainApplicationWindow {
 
 		groupsTable = new JTable();
 		scrollPane_2.setViewportView(groupsTable);
+		
+		
+		groupFilterField= new JTextField();
+		groupFilterField.setBounds(880, 56, 150, 30);
+		frame.getContentPane().add(groupFilterField);
+			
+		JLabel groupFilterLabel= new JLabel("Filter: ");
+		groupFilterLabel.setFont(new Font("Times New Roman",Font.ITALIC,15));
+		groupFilterLabel.setBounds(840,56,50,30);
+		frame.getContentPane().add(groupFilterLabel);
+		
 
 		btnCreateGroup = new JButton("Create Group");
 		btnCreateGroup.addActionListener(new ActionListener() {
@@ -343,7 +396,6 @@ public class MainApplicationWindow {
 				int groupColumn = 0;
 
 				String selectedGroup = "";
-				int grouRowCoungResult = -1;
 
 				if (selectedGroupRow > -1) {
 					selectedGroup = (String) groupsTable.getModel().getValueAt(selectedGroupRow, groupColumn);
@@ -368,7 +420,6 @@ public class MainApplicationWindow {
 					if (selectedAgentsCount > 1) {
 						int[] selectedRows = agentTable.getSelectedRows();
 						for (Integer temp : selectedRows) {
-							String agentName = (String) agentTable.getModel().getValueAt(temp, 1);
 							selectedAgentNames.add((String) agentTable.getModel().getValueAt(temp, 1));
 						}
 					} else if (selectedAgentsCount < 1) {
@@ -682,6 +733,24 @@ public class MainApplicationWindow {
 			ArrayList<Group> groups = controller.getAllGroups();
 			GroupTableModel groupModel = new GroupTableModel(groups);
 			groupsTable.setModel(groupModel);
+			groupSorter = new TableRowSorter<GroupTableModel>(groupModel);
+			groupsTable.setRowSorter(groupSorter);
+			groupFilterField.getDocument().addDocumentListener(new DocumentListener() {
+				  public void changedUpdate(DocumentEvent e) {
+					    filterGroup();
+					  }
+					  public void removeUpdate(DocumentEvent e) {
+					    filterGroup();
+					  }
+					  public void insertUpdate(DocumentEvent e) {
+					    filterGroup();
+					  }
+
+					  public void filterGroup() {
+						  groupSorter.setRowFilter(RowFilter.regexFilter("(?i)"+groupFilterField.getText()));
+						  groupsTable.setRowSorter(groupSorter);
+					  }
+					});
 		} catch (NoAgentsException ae) {
 			groupsTable.setModel(new GroupTableModel(new ArrayList<Group>()));
 		}
@@ -689,14 +758,52 @@ public class MainApplicationWindow {
 			ArrayList<Rulebook> rulebooks = controller.getAllRulebooks();
 			RulebookTableModel rulebookModel = new RulebookTableModel(rulebooks);
 			rulebookTable.setModel(rulebookModel);
+			rulebookSorter = new TableRowSorter<RulebookTableModel>(rulebookModel);
+			rulebookTable.setRowSorter(rulebookSorter);
+			rulebookFilterField.getDocument().addDocumentListener(new DocumentListener() {
+				  public void changedUpdate(DocumentEvent e) {
+					    filter();
+					  }
+					  public void removeUpdate(DocumentEvent e) {
+					    filter();
+					  }
+					  public void insertUpdate(DocumentEvent e) {
+					    filter();
+					  }
+
+					  public void filter() {
+						  rulebookSorter.setRowFilter(RowFilter.regexFilter("(?i)"+rulebookFilterField.getText()));
+						  rulebookTable.setRowSorter(rulebookSorter);
+					  }
+					});
 		} catch (NoAgentsException ae) {
 			rulebookTable.setModel(new RulebookTableModel(new ArrayList<Rulebook>()));
 		}
-
 		try {
 			ArrayList<Agent> agents = controller.getAllAgents();
 			AgentTableModel agentsModel = new AgentTableModel(agents);
 			agentTable.setModel(agentsModel);
+			agentSorter = new TableRowSorter<AgentTableModel>(agentsModel);
+			agentTable.setRowSorter(agentSorter);
+			agentFilterField.getDocument().addDocumentListener(new DocumentListener() {
+				  public void changedUpdate(DocumentEvent e) {
+					    filter();
+					  }
+					  public void removeUpdate(DocumentEvent e) {
+					    filter();
+					  }
+					  public void insertUpdate(DocumentEvent e) {
+					    filter();
+					  }
+
+					  public void filter() {
+						  agentSorter.setRowFilter(RowFilter.regexFilter("(?i)"+agentFilterField.getText()));
+						  agentTable.setRowSorter(agentSorter);
+					  }
+					});
+			
+			 
+			 
 		} catch (NoAgentsException ae) {
 			agentTable.setModel(new AgentTableModel(new ArrayList<Agent>()));
 			agentTable.removeAll();
@@ -704,6 +811,10 @@ public class MainApplicationWindow {
 
 	}
 
+
+	
+	
+	
 	/**
 	 * Method to return the selected group-groups
 	 * 
