@@ -171,6 +171,11 @@ public class GroupDetails {
 				ArrayList<String> selectedAgentNames = new ArrayList<String>();
 				if (selectedAgentsCount > 1) {
 					int[] selectedRows = availableAgentTable.getSelectedRows();
+					for(int i=0;i<selectedRows.length;i++) {
+						selectedRows[i]=availableAgentTable.convertRowIndexToModel(selectedRows[i]);
+					}
+					
+					
 					for (Integer temp : selectedRows) {
 						String agentName = (String) availableAgentTable.getModel().getValueAt(temp, 1);
 						selectedAgentNames.add((String) availableAgentTable.getModel().getValueAt(temp, 1));
@@ -187,7 +192,7 @@ public class GroupDetails {
 					agentToBeAssigned = (String) response;
 
 				} else if (selectedAgentsCount == 1) {
-					int selectedAgentRow = availableAgentTable.getSelectedRow();
+					int selectedAgentRow = availableAgentTable.convertRowIndexToModel(availableAgentTable.getSelectedRow());
 					agentToBeAssigned = (String) availableAgentTable.getModel().getValueAt(selectedAgentRow, 1);
 				}
 				if (agentToBeAssigned != null && !agentToBeAssigned.isEmpty()) {
@@ -336,6 +341,9 @@ public class GroupDetails {
 
 				if (selectedAgentsCount > 1) {
 					int[] selectedRows = assignedAgentsTable.getSelectedRows();
+					for(int i=0;i<selectedRows.length;i++) {
+						selectedRows[i]= assignedAgentsTable.convertRowIndexToModel(selectedRows[i]);
+					}
 
 					for (Integer temp : selectedRows) {
 						// String agentName=(String) assignedAgentsTable.getModel().getValueAt(temp,1);
@@ -353,7 +361,7 @@ public class GroupDetails {
 					agentToBeDeleted = (String) response;
 
 				} else if (selectedAgentsCount == 1) {
-					int selectedAgentRow = assignedAgentsTable.getSelectedRow();
+					int selectedAgentRow = assignedAgentsTable.convertRowIndexToModel(assignedAgentsTable.getSelectedRow());
 					agentToBeDeleted = (String) assignedAgentsTable.getModel().getValueAt(selectedAgentRow, 1);
 				}
 				if (agentToBeDeleted != null && !agentToBeDeleted.isEmpty()) {
@@ -415,7 +423,7 @@ public class GroupDetails {
 			public void actionPerformed(ActionEvent arg0) {
 				// assignedRulebooksTable
 				int selectedRulebookRow = -1;
-				selectedRulebookRow = assignedRulebooksTable.getSelectedRow();
+				selectedRulebookRow =assignedRulebooksTable.convertRowIndexToModel(assignedRulebooksTable.getSelectedRow());
 				int rulebookColumn = 0;
 				int result = 0;
 				String name = "";
@@ -514,7 +522,7 @@ public class GroupDetails {
 				int[] selectedRows = null;
 				String rulebookName = "";
 				int selectedRulebookRow = -1;
-				selectedRulebookRow = availableRulebooksTable.getSelectedRow();
+				selectedRulebookRow = availableRulebooksTable.convertRowIndexToModel(availableRulebooksTable.getSelectedRow());
 				int rulebookColumn = 0;
 				int rowCountResult = -1;
 				// if there is not rulebook selected then a pop up window will appear with a

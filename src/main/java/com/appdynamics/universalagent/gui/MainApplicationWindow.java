@@ -291,7 +291,8 @@ public class MainApplicationWindow {
 			public void actionPerformed(ActionEvent e) {
 				String groupName = "";
 				if (groupsTable.getSelectedRow() != -1) {
-					int row = groupsTable.getSelectedRow();
+					//Convert View index to model index
+					int row = groupsTable.convertRowIndexToModel(groupsTable.getSelectedRow());
 					int col = 0;
 					groupName = (String) groupsTable.getModel().getValueAt(row, col);
 				} else {
@@ -323,9 +324,11 @@ public class MainApplicationWindow {
 				String groupName = "";
 
 				int selectedRulebookRow = -1;
-				selectedRulebookRow = rulebookTable.getSelectedRow();
+				//Convert View index to model index
+				if(rulebookTable.getSelectedRowCount()>0) {
+					selectedRulebookRow=rulebookTable.convertRowIndexToModel(rulebookTable.getSelectedRow() );
+				}
 				int rulebookColumn = 0;
-
 				// if there is not rulebook selected then a pop up window will
 				// appear with a drop down list of all possible rulebooks
 				if (selectedRulebookRow > -1) {
@@ -346,7 +349,12 @@ public class MainApplicationWindow {
 				// list of groups
 				if (rulebookName != null) {
 					int selectedGroupRow = -1;
-					selectedGroupRow = groupsTable.getSelectedRow();
+					
+					
+					if(groupsTable.getSelectedRowCount()>0) {
+					//Convert View index to model index
+						selectedGroupRow=groupsTable.convertRowIndexToModel(groupsTable.getSelectedRow());
+					}
 					int groupColumn = 0;
 
 					if (selectedGroupRow > -1) {
@@ -366,6 +374,9 @@ public class MainApplicationWindow {
 				if (groupName != null && rulebookName != null) {
 					int result = 0;
 					JFrame frmLoginSystem = new JFrame("Exit");
+					if (rulebookTable.getSelectedRowCount()>1 || groupsTable.getSelectedRowCount()>1) {
+						JOptionPane.showMessageDialog(frame, "Each Group can be assigned with one Rulebook only ", "Rulebook-Group Relationship", JOptionPane.INFORMATION_MESSAGE);
+					}
 					if (JOptionPane.showConfirmDialog(frmLoginSystem,
 							"Confirm if you want to assign " + rulebookName + " to " + groupName + " group", " ",
 							JOptionPane.YES_NO_OPTION) == JOptionPane.YES_NO_OPTION) {
@@ -392,11 +403,12 @@ public class MainApplicationWindow {
 			public void actionPerformed(ActionEvent e) {
 
 				int selectedGroupRow = -1;
-				selectedGroupRow = groupsTable.getSelectedRow();
+				//Convert View index to model index
+				if(groupsTable.getSelectedRowCount()>0) {
+					selectedGroupRow=groupsTable.convertRowIndexToModel( groupsTable.getSelectedRow() );
+				}
 				int groupColumn = 0;
-
 				String selectedGroup = "";
-
 				if (selectedGroupRow > -1) {
 					selectedGroup = (String) groupsTable.getModel().getValueAt(selectedGroupRow, groupColumn);
 				} else {
@@ -413,12 +425,16 @@ public class MainApplicationWindow {
 				if (selectedGroup != null & selectedGroup != "" && !selectedGroup.isEmpty()) {
 
 					int selectedAgentsCount = 0;
-					selectedAgentsCount = agentTable.getSelectedRowCount();
+					selectedAgentsCount=agentTable.getSelectedRowCount();
 					String agentToBeAssigned = "";
 					ArrayList<String> selectedAgentNames = new ArrayList<String>();
 
 					if (selectedAgentsCount > 1) {
 						int[] selectedRows = agentTable.getSelectedRows();
+						//Convert View index to model index
+						for(int i=0;i<selectedRows.length;i++) {
+							selectedRows[i]=agentTable.convertRowIndexToModel(selectedRows[i]);
+						}
 						for (Integer temp : selectedRows) {
 							selectedAgentNames.add((String) agentTable.getModel().getValueAt(temp, 1));
 						}
@@ -434,7 +450,8 @@ public class MainApplicationWindow {
 						agentToBeAssigned = (String) response;
 
 					} else if (selectedAgentsCount == 1) {
-						int selectedAgentRow = agentTable.getSelectedRow();
+						//Convert View index to model index
+						int selectedAgentRow=agentTable.convertRowIndexToModel(  agentTable.getSelectedRow());
 						agentToBeAssigned = (String) agentTable.getModel().getValueAt(selectedAgentRow, 1);
 					}
 					if (agentToBeAssigned != null && !agentToBeAssigned.isEmpty()) {
@@ -495,9 +512,12 @@ public class MainApplicationWindow {
 			public void actionPerformed(ActionEvent e) {
 				String groupName = "";
 				if (groupsTable.getSelectedRow() != -1) {
-					int row = groupsTable.getSelectedRow();
+					//Convert View index to model index					
+					int row = groupsTable.convertRowIndexToModel(groupsTable.getSelectedRow());
+					
 					int col = 0;
 					groupName = (String) groupsTable.getModel().getValueAt(row, col);
+					
 				} else {
 					int rowCount = groupsTable.getRowCount();
 					String[] groupNames = new String[rowCount];
@@ -537,7 +557,8 @@ public class MainApplicationWindow {
 		updateRulebookBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRulebookRow = -1;
-				selectedRulebookRow = rulebookTable.getSelectedRow();
+				//Convert View index to model index
+				selectedRulebookRow =rulebookTable.convertRowIndexToModel(rulebookTable.getSelectedRow());
 				int rulebookColumn = 0;
 				if (selectedRulebookRow > -1) {
 					String rulebookName = (String) rulebookTable.getModel().getValueAt(selectedRulebookRow, 0);
@@ -598,7 +619,8 @@ public class MainApplicationWindow {
 			public void actionPerformed(ActionEvent e) {
 
 				int selectedRulebookRow = -1;
-				selectedRulebookRow = rulebookTable.getSelectedRow();
+				//Convert View index to model index
+				selectedRulebookRow=rulebookTable.convertRowIndexToModel(rulebookTable.getSelectedRow());
 				int rulebookColumn = 0;
 				int result = -1;
 				String name = "";
@@ -653,6 +675,11 @@ public class MainApplicationWindow {
 				ArrayList<Integer> rowIndexes = new ArrayList<Integer>();
 				if (selectedAgentsCount > 1) {
 					int[] selectedRows = agentTable.getSelectedRows();
+					
+					//Convert View index to model index
+					for(int i=0;i<selectedRows.length;i++) {
+						selectedRows[i]= agentTable.convertRowIndexToModel(selectedRows[i]);
+					}
 					for (Integer temp : selectedRows) {
 						String agentName = (String) agentTable.getModel().getValueAt(temp, 1);
 						selectedAgentNames.add((String) agentTable.getModel().getValueAt(temp, 1));
@@ -672,7 +699,9 @@ public class MainApplicationWindow {
 					}
 
 				} else if (selectedAgentsCount == 1) {
-					int selectedAgentRow = agentTable.getSelectedRow();
+					//Convert View index to model index
+					int selectedAgentRow = agentTable.convertRowIndexToModel(agentTable.getSelectedRow());
+					
 					agentToBeDeleted = (String) agentTable.getModel().getValueAt(selectedAgentRow, 1);
 					selectedAgentNames.add(agentToBeDeleted);
 				}
@@ -758,6 +787,7 @@ public class MainApplicationWindow {
 			ArrayList<Rulebook> rulebooks = controller.getAllRulebooks();
 			RulebookTableModel rulebookModel = new RulebookTableModel(rulebooks);
 			rulebookTable.setModel(rulebookModel);
+		
 			rulebookSorter = new TableRowSorter<RulebookTableModel>(rulebookModel);
 			rulebookTable.setRowSorter(rulebookSorter);
 			rulebookFilterField.getDocument().addDocumentListener(new DocumentListener() {
@@ -824,14 +854,21 @@ public class MainApplicationWindow {
 	public ArrayList<String> getSelectedGroup(JTable tableName) {
 		ArrayList<String> selectedItems = new ArrayList<String>();
 		int selectedRowCount = tableName.getSelectedRowCount();
+
+		
 		String groupToBeDeleted = "";
 		int col = 0;
 		if (selectedRowCount != -1 && selectedRowCount == 1) {
-			int row = tableName.getSelectedRow();
+			//Convert View index to model index
+			int row = tableName.convertRowIndexToModel(tableName.getSelectedRow());
 			selectedItems.add((String) tableName.getModel().getValueAt(row, col));
 
 		} else if (selectedRowCount > 1) {
+			//Convert View index to model index
 			int index[] = tableName.getSelectedRows();
+			for(int i=0;i<index.length;i++) {
+				index[i]= tableName.convertRowIndexToModel(index[i]);
+			}
 			for (Integer temp : index) {
 				selectedItems.add((String) tableName.getModel().getValueAt(temp, col));
 			}

@@ -29,6 +29,7 @@ import com.appdynamics.universalagent.universalagent.Rulebook;
  */
 @SuppressWarnings("serial")
 public class RulebookTableModel extends AbstractTableModel {
+	
 	private List<Rulebook> rulebooks;
 	private final String[] tableHeaders = { "Rulebook Name", "Rulebook Comment", "Rulebook Version" };
 
@@ -43,7 +44,7 @@ public class RulebookTableModel extends AbstractTableModel {
 	}
 
 	public int getColumnCount() {
-		return 3;
+		return tableHeaders.length;
 	}
 
 	public String getColumnName(int columnIndex) {

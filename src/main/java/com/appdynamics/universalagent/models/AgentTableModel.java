@@ -42,7 +42,7 @@ public class AgentTableModel extends AbstractTableModel {
 	}
 
 	public int getColumnCount() {
-		return 4;
+		return tableHeaders.length;
 	}
 
 	public String getColumnName(int columnIndex) {

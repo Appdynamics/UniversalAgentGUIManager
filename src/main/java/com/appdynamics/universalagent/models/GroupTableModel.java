@@ -47,7 +47,7 @@ public class GroupTableModel extends AbstractTableModel {
 	}
 
 	public int getColumnCount() {
-		return 2;
+		return tableHeaders.length;
 	}
 
 	public String getColumnName(int columnIndex) {
