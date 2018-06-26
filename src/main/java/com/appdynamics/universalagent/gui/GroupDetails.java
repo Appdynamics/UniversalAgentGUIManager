@@ -16,22 +16,16 @@
 package com.appdynamics.universalagent.gui;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
-
 import com.appdynamics.universalagent.exceptions.NoAgentsException;
 import com.appdynamics.universalagent.models.AgentTableModel;
-import com.appdynamics.universalagent.models.GroupTableModel;
 import com.appdynamics.universalagent.models.RulebookTableModel;
 import com.appdynamics.universalagent.universalagent.Agent;
 import com.appdynamics.universalagent.universalagent.Group;
 import com.appdynamics.universalagent.universalagent.RestController;
 import com.appdynamics.universalagent.universalagent.Rulebook;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
-import java.awt.BorderLayout;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.JPanel;
@@ -39,20 +33,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
-
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
 import javax.swing.JButton;
-import java.awt.Button;
 import javax.swing.JComboBox;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableRowSorter;
-
 import java.awt.Color;
 import java.awt.Dimension;
 
@@ -63,6 +52,9 @@ import java.awt.Dimension;
  */
 public class GroupDetails {
 
+	/**
+	 * Swing component declaration
+	 */
 	private JFrame frame;
 	private RestController controller;
 	private JTable assignedAgentsTable;
@@ -76,10 +68,8 @@ public class GroupDetails {
 	private TableRowSorter<AgentTableModel> availableAgentSorter;
 	private JTextField assignedAgentFilterField;
 	private TableRowSorter<AgentTableModel> assignedAgentSorter;
-	
 	private JTextField assignedRulebookFilterField;
 	private TableRowSorter<RulebookTableModel> assignedRulebookSorter;
-	
 	private JTextField availableRulebookFilterField;
 	private TableRowSorter<RulebookTableModel> availableRulebookSorter;
 
@@ -87,7 +77,6 @@ public class GroupDetails {
 	 * Launch the application.
 	 */
 	public void run(final RestController controller, final String selectedGroup) {
-
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -98,7 +87,6 @@ public class GroupDetails {
 				}
 			}
 		});
-
 	}
 
 	public GroupDetails(RestController controller, String selectedGroup) {
@@ -108,28 +96,25 @@ public class GroupDetails {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Initialize the main frame of the application.
+	 * Instantiate, customize and apply features to swing components
 	 */
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1400, 700);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-
 		JLabel lblNewLabel = new JLabel("Group Details ");
 		lblNewLabel.setBounds(0, 0, 1384, 36);
 		lblNewLabel.setFont(new Font("Times New Roman", Font.ITALIC, 30));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		frame.getContentPane().add(lblNewLabel);
-
 		JPanel availableAgentsPanel = new JPanel();
 		availableAgentsPanel.setBounds(10, 95, 249, 512);
 		frame.getContentPane().add(availableAgentsPanel);
 		availableAgentsPanel.setLayout(null);
 
-		/**
-		 * Selected Group's agents panel
-		 */
+		 // Selected Group's agents panel
 		JPanel innerAvailableAgentsPanel = new JPanel();
 		innerAvailableAgentsPanel.setBounds(10, 52, 229, 420);
 		availableAgentsPanel.add(innerAvailableAgentsPanel);
@@ -142,13 +127,11 @@ public class GroupDetails {
 		availableAgentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		availableAgentTable.setVisible(true);
 		innerAvailableAgentsPanel.add(availableAgentScrollPane);
-
 		JLabel lblAgentsAvailable = new JLabel("Agents Available");
 		lblAgentsAvailable.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		lblAgentsAvailable.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAgentsAvailable.setBounds(10, 0, 229, 30);
 		availableAgentsPanel.add(lblAgentsAvailable);
-		
 		
     	//Text field to filter available agent table
 		availableAgentFilterField= new JTextField();
@@ -161,7 +144,8 @@ public class GroupDetails {
 		agentFilterLabel.setFont(new Font("Times New Roman",Font.ITALIC,15));
 		agentFilterLabel.setBounds(5, 30, 50, 20);
 		
-
+		//Button functionality to assign available agents
+		//to the open group
 		JButton btnNewButton = new JButton("Assign To Group");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -174,10 +158,7 @@ public class GroupDetails {
 					for(int i=0;i<selectedRows.length;i++) {
 						selectedRows[i]=availableAgentTable.convertRowIndexToModel(selectedRows[i]);
 					}
-					
-					
 					for (Integer temp : selectedRows) {
-						String agentName = (String) availableAgentTable.getModel().getValueAt(temp, 1);
 						selectedAgentNames.add((String) availableAgentTable.getModel().getValueAt(temp, 1));
 					}
 				} else if (selectedAgentsCount < 1) {
@@ -190,7 +171,6 @@ public class GroupDetails {
 							"Please select the agent you want to assign to " + selectedGroup, "Select Agent",
 							JOptionPane.QUESTION_MESSAGE, null, agentNames, "E");
 					agentToBeAssigned = (String) response;
-
 				} else if (selectedAgentsCount == 1) {
 					int selectedAgentRow = availableAgentTable.convertRowIndexToModel(availableAgentTable.getSelectedRow());
 					agentToBeAssigned = (String) availableAgentTable.getModel().getValueAt(selectedAgentRow, 1);
@@ -203,7 +183,6 @@ public class GroupDetails {
 							JOptionPane.YES_NO_OPTION) == JOptionPane.YES_NO_OPTION) {
 						result = controller.assignAgentToGroup(selectedGroup, agentToBeAssigned);
 					}
-
 					if (result >= 200 && result < 220) {
 						JOptionPane.showMessageDialog(frame,
 								agentToBeAssigned + " has been successfully added to " + selectedGroup,
@@ -218,7 +197,6 @@ public class GroupDetails {
 				} else if (selectedAgentNames.size() > 1) {
 					String agentsToBeAssigned = "";
 					for (int i = 0; i < selectedAgentNames.size(); i++) {
-
 						agentsToBeAssigned += " " + selectedAgentNames.get(i);
 					}
 					int result = 0;
@@ -245,16 +223,13 @@ public class GroupDetails {
 		});
 		btnNewButton.setBounds(20, 475, 200, 35);
 		availableAgentsPanel.add(btnNewButton);
-
 		JPanel groupPanel = new JPanel();
 		groupPanel.setBorder(new LineBorder(Color.GRAY, 3));
 		groupPanel.setBounds(284, 95, 814, 515);
 		frame.getContentPane().add(groupPanel);
 		groupPanel.setLayout(null);
-
-		/**
-		 * Assigned Agents Panel
-		 */
+		 
+		// Assigned Agents Panel
 		JPanel agentsAssignedPanel = new JPanel();
 		agentsAssignedPanel.setBounds(10, 51, 388, 420);
 		groupPanel.add(agentsAssignedPanel);
@@ -267,22 +242,17 @@ public class GroupDetails {
 		assignedAgentsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		assignedAgentsTable.setVisible(true);
 		agentsAssignedPanel.add(agentsScrollPane);
-		
 		//Filter Label+ Field
 		JLabel assignedAgentFilterLabel= new JLabel("Filter:");
 		assignedAgentFilterLabel.setBounds(10, 30, 40, 16);
 		assignedAgentFilterLabel.setFont(new Font("Times New Roman",Font.ITALIC,15));
 		groupPanel.add(assignedAgentFilterLabel);
-		
 		//Text field to filter assigned agent table
 		assignedAgentFilterField= new JTextField();
 		groupPanel.add(assignedAgentFilterField);
 		assignedAgentFilterField.setBounds(50,30 ,150, 20);
 	
-		/**
-		 * Assigned Rulebooks Panel
-		 * 
-		 */
+		 // Assigned Rulebooks Panel
 		JPanel assignedRulebooksPanel = new JPanel();
 		assignedRulebooksPanel.setBounds(414, 51, 390, 420);
 		groupPanel.add(assignedRulebooksPanel);
@@ -301,52 +271,34 @@ public class GroupDetails {
 		groupPanel.add(assignedRulebookFilterLabel);
 		assignedRulebookFilterLabel.setFont(new Font("Times New Roman",Font.ITALIC,15));
 		assignedRulebookFilterLabel.setBounds(414, 30, 43, 20);
-		
-	
 		assignedRulebookFilterField= new JTextField();
 		groupPanel.add(assignedRulebookFilterField);
 		assignedRulebookFilterField.setBounds(454, 30, 150, 20);
-
-		
-		
-
 		JLabel lblAgentsOfThis = new JLabel("Agents of This Group");
 		lblAgentsOfThis.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAgentsOfThis.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		lblAgentsOfThis.setBounds(10, 0, 388, 30);
 		groupPanel.add(lblAgentsOfThis);
-		
-	
-		
-
-
 		JLabel lblRulebooksOfThis = new JLabel("Rulebooks of This Group");
 		lblRulebooksOfThis.setHorizontalAlignment(SwingConstants.CENTER);
 		lblRulebooksOfThis.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		lblRulebooksOfThis.setBounds(416, 0, 388, 30);
 		groupPanel.add(lblRulebooksOfThis);
 
-		/**
-		 * Removes Agent or agents for group
-		 */
+		 // Button to Remove Agent or agents for group
 		JButton btnNewButton_1 = new JButton("Remove From Group");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				int selectedAgentsCount = 0;
 				selectedAgentsCount = assignedAgentsTable.getSelectedRowCount();
 				String agentToBeDeleted = "";
-
 				ArrayList<String> selectedAgentNames = new ArrayList<String>();
-
 				if (selectedAgentsCount > 1) {
 					int[] selectedRows = assignedAgentsTable.getSelectedRows();
 					for(int i=0;i<selectedRows.length;i++) {
 						selectedRows[i]= assignedAgentsTable.convertRowIndexToModel(selectedRows[i]);
 					}
-
 					for (Integer temp : selectedRows) {
-						// String agentName=(String) assignedAgentsTable.getModel().getValueAt(temp,1);
 						selectedAgentNames.add((String) assignedAgentsTable.getModel().getValueAt(temp, 1));
 					}
 				} else if (selectedAgentsCount < 1) {
@@ -377,13 +329,11 @@ public class GroupDetails {
 								agentToBeDeleted + " has been successfully removed from " + selectedGroup,
 								"Successfully removed", JOptionPane.INFORMATION_MESSAGE);
 					} else if (result == 0) {
-
 					} else {
 						String resultCode = "Result Code: " + result;
 						JOptionPane.showMessageDialog(null, "Failed to delete " + agentToBeDeleted, resultCode,
 								JOptionPane.ERROR_MESSAGE);
 					}
-
 				} else if (selectedAgentNames.size() > 1) {
 
 					String agentsToBeAssigned = "";
@@ -391,7 +341,6 @@ public class GroupDetails {
 
 						agentsToBeAssigned += " " + selectedAgentNames.get(i);
 					}
-
 					int result = 0;
 					JFrame frmLoginSystem = new JFrame("Exit");
 					if (JOptionPane.showConfirmDialog(frmLoginSystem,
@@ -404,7 +353,6 @@ public class GroupDetails {
 								"" + agentsToBeAssigned + " has been successfully removed from " + selectedGroup,
 								"Successful assignment", JOptionPane.INFORMATION_MESSAGE);
 					} else if (result == 0) {
-
 					} else {
 						String resultCode = "Result Code: " + result;
 						JOptionPane.showMessageDialog(null, "Failed to assign " + agentToBeDeleted, resultCode,
@@ -418,6 +366,7 @@ public class GroupDetails {
 		btnNewButton_1.setBounds(110, 475, 200, 35);
 		groupPanel.add(btnNewButton_1);
 
+		//Button to remove rulebook from group
 		JButton btnRemoveFromGroup = new JButton("Remove From Group");
 		btnRemoveFromGroup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -442,12 +391,8 @@ public class GroupDetails {
 							JOptionPane.QUESTION_MESSAGE, null, rulebookName, "E");
 					name = (String) response;
 				}
-				//// I am here
-
 				if (name != null && !name.isEmpty()) {
-					/**
-					 * JOptionPanes are used to notify the user for its next actions
-					 */
+					 // JOptionPanes are used to notify the user for its next actions
 					if (JOptionPane.showConfirmDialog(frame,
 							"Are you sure you want to remove: " + name + " from " + selectedGroup + " ?",
 							"Delete Rulebook", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_NO_OPTION) {
@@ -457,18 +402,14 @@ public class GroupDetails {
 						JOptionPane.showMessageDialog(frame, name + " has been successfully removed!", "Successful ",
 								JOptionPane.INFORMATION_MESSAGE);
 					} else if (result == 0) {
-
 					}
-
 					else {
 						String resultCode = "Result Code: " + result;
 						JOptionPane.showMessageDialog(null, "The " + name + " has not been removed!", resultCode,
 								JOptionPane.ERROR_MESSAGE);
 					}
-
 				}
 				refresh();
-
 			}
 		});
 		btnRemoveFromGroup.setBounds(515, 475, 200, 35);
@@ -479,9 +420,7 @@ public class GroupDetails {
 		frame.getContentPane().add(availableRulebooks);
 		availableRulebooks.setLayout(null);
 
-		/**
-		 * Available Rulebook Panels
-		 */
+		 //Available Rulebook Panels
 		innerAvailableRuleboooksPanel = new JPanel();
 		innerAvailableRuleboooksPanel.setBounds(10, 51, 229, 420);
 		availableRulebooks.add(innerAvailableRuleboooksPanel);
@@ -494,19 +433,15 @@ public class GroupDetails {
 		availableRulebooksTable.setVisible(true);
 		availableRulebookScrollPane.setVisible(true);
 		innerAvailableRuleboooksPanel.add(availableRulebookScrollPane);
-
 		JLabel lblRulebooksAvailable = new JLabel("Rulebooks Available");
 		lblRulebooksAvailable.setHorizontalAlignment(SwingConstants.CENTER);
 		lblRulebooksAvailable.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		lblRulebooksAvailable.setBounds(10, 0, 229, 30);
 		availableRulebooks.add(lblRulebooksAvailable);
-		
-		
 		JLabel availableRulebookFilterLabel= new JLabel("Filter: ");
 		availableRulebooks.add(availableRulebookFilterLabel);
 		availableRulebookFilterLabel.setFont(new Font("Times New Roman",Font.ITALIC,15));
 		availableRulebookFilterLabel.setBounds(10, 25, 43, 30);
-		
 		//Text field to filter assigned agent table
 		availableRulebookFilterField= new JTextField();
 		availableRulebooks.add(availableRulebookFilterField);
@@ -514,17 +449,14 @@ public class GroupDetails {
 		
 		
 		
-
+		//Button to Assign Agent/Agents to group
 		JButton btnAssignToGroup = new JButton("Assign To Group");
 		btnAssignToGroup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int selectedRowCount = availableRulebooksTable.getSelectedRowCount();
-				int[] selectedRows = null;
 				String rulebookName = "";
 				int selectedRulebookRow = -1;
 				selectedRulebookRow = availableRulebooksTable.convertRowIndexToModel(availableRulebooksTable.getSelectedRow());
 				int rulebookColumn = 0;
-				int rowCountResult = -1;
 				// if there is not rulebook selected then a pop up window will appear with a
 				// drop down list of all possible rulebooks
 				if (selectedRulebookRow > -1) {
@@ -541,9 +473,7 @@ public class GroupDetails {
 							JOptionPane.QUESTION_MESSAGE, null, rulebookNames, "E");
 					rulebookName = (String) response;
 				}
-
 				String groupName = selectedGroup;
-
 				if (groupName != null && rulebookName != null) {
 					int result = 0;
 					JFrame frmLoginSystem = new JFrame("Exit");
@@ -571,9 +501,7 @@ public class GroupDetails {
 		btnAssignToGroup.setBounds(30, 475, 200, 35);
 		availableRulebooks.add(btnAssignToGroup);
 
-		/**
-		 * Group Combo Box dynamically change The details on the page
-		 */
+		// Group Combo Box dynamically change The details on the page
 		groupSelectionComboBox = new JComboBox();
 		groupSelectionComboBox.setBounds(284, 47, 249, 41);
 		ArrayList<Group> comboGroups = new ArrayList<Group>();
@@ -592,12 +520,10 @@ public class GroupDetails {
 			public void actionPerformed(ActionEvent e) {
 				selectedGroup = (String) groupSelectionComboBox.getSelectedItem();
 				refresh();
-
 			}
 
 		});
 		frame.getContentPane().add(groupSelectionComboBox);
-
 		JButton btnNewButton_2 = new JButton("Back");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -609,12 +535,14 @@ public class GroupDetails {
 		});
 		btnNewButton_2.setBounds(10, 47, 123, 36);
 		frame.getContentPane().add(btnNewButton_2);
-
 		refresh();
 	}
 
+	/**
+	 * Method Refresh, dynamically updates the status of the UI
+	 * Is called whenever a user performs an action against the Application.
+	 */
 	public void refresh() {
-
 		ArrayList<Rulebook> rulebooks = new ArrayList<Rulebook>();
 		try {
 			rulebooks = controller.getAllRulebooks();
@@ -636,19 +564,15 @@ public class GroupDetails {
 			}
 
 		}
-
 		RulebookTableModel assignedRulebooksModel = new RulebookTableModel(assignedRulebooks);
 		RulebookTableModel availabledRulebooksModel = new RulebookTableModel(rulebooks);
 		assignedRulebooksTable.setModel(assignedRulebooksModel);
 		availableRulebooksTable.setModel(availabledRulebooksModel);
-
 		ArrayList<Agent> agents = new ArrayList<Agent>();
 		try {
 			agents = controller.getAllAgents();
 		} catch (NoAgentsException e) {
-
 		}
-
 		ArrayList<Agent> assignedAgents = new ArrayList<Agent>();
 		assignedAgents = controller.getAllAgentsAssociatedWithAGroup(selectedGroup);
 		for (int i = 0; i < agents.size(); i++) {
@@ -667,12 +591,7 @@ public class GroupDetails {
 		assignedAgentsTable.setModel(assignedAgentTableModel);
 		availableAgentTable.setModel(availableAgentTableModel);
 		
-		
-		/**
-		 * Filter Handle for all tables available on this view
-		 */
-		
-
+    	 // Filter Handle for all tables available on this view
 		//Code to filter available agents table
 		availableAgentTable.setModel(availableAgentTableModel);
 		availableAgentSorter = new TableRowSorter<AgentTableModel>(availableAgentTableModel);
@@ -758,10 +677,6 @@ public class GroupDetails {
 						  }
 						});
 	}
-		
-		
-		
-		
 	}
 
 
